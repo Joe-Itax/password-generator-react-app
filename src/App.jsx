@@ -2,11 +2,11 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [includeNumber, setIncludeNumber] = useState(false);
-  const [includeLower, setIncludeLower] = useState(false);
-  const [includeUpper, setIncludeUpper] = useState(false);
-  const [includeSpecial, setIncludeSpecial] = useState(false);
-  const [excludeCharSimilar, setExcludeCharSimilar] = useState(false);
+  const [includeNumber, setIncludeNumber] = useState(true);
+  const [includeLower, setIncludeLower] = useState(true);
+  const [includeUpper, setIncludeUpper] = useState(true);
+  const [includeSpecial, setIncludeSpecial] = useState(true);
+  const [excludeCharSimilar, setExcludeCharSimilar] = useState(true);
   const [passwordLength, setPasswordLength] = useState(8);
   const [generatedPassword, setGeneratedPassword] = useState("");
 
@@ -30,11 +30,27 @@ function App() {
       charset += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
     }
 
-    for (let i = 0; i < passwordLength; i++) {
-      let randomIndex = Math.floor(Math.random() * charset.length);
-      password += charset[randomIndex];
-      setCanCopy(true);
-    }
+    const regExpNumber = includeNumber ? /[0-9]/ : null;
+    const regExpUpper = includeUpper ? /[A-Z]/ : null;
+    const regExpLower = includeLower ? /[a-z]/ : null;
+    const regExpSpecialChar = includeSpecial
+      ? // eslint-disable-next-line no-useless-escape
+        /[$*!:;,?.\/§%£ø*\\#~@{}\[\]\`|^+)(=&]/
+      : null;
+    do {
+      password = "";
+      for (let i = 0; i < passwordLength; i++) {
+        let randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset[randomIndex];
+        setCanCopy(true);
+      }
+      console.log(password);
+    } while (
+      (regExpNumber !== null && !regExpNumber.test(password)) ||
+      (regExpUpper !== null && !regExpUpper.test(password)) ||
+      (regExpLower !== null && !regExpLower.test(password)) ||
+      (regExpSpecialChar !== null && !regExpSpecialChar.test(password))
+    );
 
     if (
       (!includeNumber && !includeLower && !includeUpper && !includeSpecial) ||
@@ -59,7 +75,7 @@ function App() {
             value={includeNumber}
             onChange={(e) => setIncludeNumber(e.target.checked)}
             id="inclureChiffre"
-            defaultChecked=""
+            defaultChecked
           />
           <label className="form-check-label" htmlFor="inclureChiffre">
             Inclure Des Chiffres
@@ -72,7 +88,7 @@ function App() {
             value={includeLower}
             onChange={(e) => setIncludeLower(e.target.checked)}
             id="inclureMinuscule"
-            defaultChecked=""
+            defaultChecked
           />
           <label className="form-check-label" htmlFor="inclureMinuscule">
             Inclure Des Minuscules
@@ -85,7 +101,7 @@ function App() {
             value={includeUpper}
             onChange={(e) => setIncludeUpper(e.target.checked)}
             id="inclureMajuscule"
-            defaultChecked=""
+            defaultChecked
           />
           <label className="form-check-label" htmlFor="inclureMajuscule">
             Inclure Des Majuscules
@@ -98,7 +114,7 @@ function App() {
             value={includeSpecial}
             onChange={(e) => setIncludeSpecial(e.target.checked)}
             id="inclureCharSpeciaux"
-            defaultChecked=""
+            defaultChecked
           />
           <label className="form-check-label" htmlFor="inclureCharSpeciaux">
             Inclure Des Caractères Spéciaux
@@ -111,7 +127,7 @@ function App() {
             value={excludeCharSimilar}
             onChange={(e) => setExcludeCharSimilar(e.target.checked)}
             id="exclureCharSimilar"
-            defaultChecked=""
+            defaultChecked
           />
           <label className="form-check-label" htmlFor="exclureCharSimilar">
             Exclure les caractères similaires [<code>o O 0 | 1 l I</code>]
