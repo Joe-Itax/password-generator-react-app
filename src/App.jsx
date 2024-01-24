@@ -64,6 +64,10 @@ function App() {
     setGeneratedPassword(password);
   }
 
+  function copyToClipboard() {
+    navigator.clipboard.writeText(generatedPassword);
+  }
+
   return (
     <main>
       <h1>Générateur de mot de passe</h1>
@@ -206,6 +210,7 @@ function App() {
             title="copier dans le presse papier"
             className="input-group-text"
             style={{ display: canCopy ? "block" : "none" }}
+            onClick={copyToClipboard}
           >
             <i className="ri-clipboard-line" />
           </span>
